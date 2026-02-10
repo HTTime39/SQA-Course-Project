@@ -1,4 +1,4 @@
-class Transaction_File_Writer:
+class TransactionFileWriter:
   def open_file(self, filename):
     return
   

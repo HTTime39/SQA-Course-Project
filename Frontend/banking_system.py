@@ -1,102 +1,122 @@
-import re
-
-from bank_accounts import Bank_Accounts
 from session import Session
-from transaction_executor import Transaction_Executor
-from transaction_file_writer import Transaction_File_Writer
-from transaction_formatter import Transaction_Formatter
+from bank_accounts import BankAccounts
+from transaction_executor import TransactionExecutor
+from transaction_file_writer import TransactionFileWriter
 
-class Banking_System:
-  current_session = None
-  logout_flag = False
 
-  def main(self):
-    print("Welcome to the Banking System")
-    self.run()
+class BankingSystem:
+    def __init__(self):
+        self.session = None
+        self.accounts = BankAccounts()
+        self.executor = TransactionExecutor(self.accounts)
+        self.writer = TransactionFileWriter()
 
-    return
-  
-  def run(self):
-    if (self.current_session == None):
-      self.login()
+    def run(self):
+        print("Banking System\n")
+        self.login()
+        self.accounts.load_accounts("current_bank_accounts.txt")
 
-    while (not self.logout_flag):
-      selected_transaction = 0
+        while self.session.is_active:
+            if self.session.user_type == "SU":
+                self.display_standard_menu()
+            else:
+                self.display_admin_menu()
 
-      if (self.current_session.is_admin):
-        selected_transaction = self.display_admin_menu()
-      else:
-        selected_transaction = self.display_standard_menu()
+        self.logout()
 
-      # TODO: Implement calls to action execution. Use switch case?
+    def login(self):
+        print("Login Menu\nStandard User: SU\nAdmin User: AU\n")
+        user_type = self.prompt_user_type()
 
-    return
-  
-  def login(self):
-    username = input("Please enter your username")
-    password = input("Please enter your password")
+        if user_type == "SU":
+            username = self.prompt_username()
+            self.session = Session(user_type="SU", username=username, is_active=True)
+        else:
+            self.session = Session(user_type="AU", username="", is_active=True)
 
-    # TODO: Implement account information retrieval + validation
+    def display_standard_menu(self):
+        print(
+            "\nStandard User Menu\nDeposit: DP\nWithdrawal: WD\nTransfer: TR\nPay Bill: PB\nLogout: LO\n"
+        )
+        transaction_code = self.prompt_transaction_code()
+        self.handle_transaction(transaction_code)
 
-    return
-  
-  def display_standard_menu(self):
-    valid_action = False
-    selected_transaction = 0
+    def display_admin_menu(self):
+        print(
+            "\nAdmin User Menu\nDeposit: DP\nWithdrawal: WD\nTransfer: TR\nPay Bill: PB\nCreate Account: CA\nDelete Account: DE\nDisable Account: DI\nChange Account Plan: CP\nLogout: LO\n"
+        )
+        transaction_code = self.prompt_transaction_code()
+        self.handle_transaction(transaction_code)
 
-    print("\nEnter a number to select an action:")
-    
-    while (not valid_action):
-      selected_transaction = input("""
-        1. Deposit 
-        2. Withdraw 
-        3. Transfer 
-        4. Pay Bill
-        5. Logout \n
-      """)
+    def handle_transaction(self, transaction_code):
+        if transaction_code == "DP":
+            transaction_record = self.executor.execute_deposit(self.session)
+        elif transaction_code == "WD":
+            transaction_record = self.executor.execute_withdrawal(self.session)
+        elif transaction_code == "TR":
+            transaction_record = self.executor.execute_transfer(self.session)
+        elif transaction_code == "PB":
+            transaction_record = self.executor.execute_pay_bill(self.session)
+        elif transaction_code == "CA":
+            transaction_record = self.executor.execute_create_account(self.session)
+        elif transaction_code == "DE":
+            transaction_record = self.executor.execute_delete_account(self.session)
+        elif transaction_code == "DI":
+            transaction_record = self.executor.execute_disable_account(self.session)
+        elif transaction_code == "CP":
+            transaction_record = self.executor.execute_change_account_plan(self.session)
+        elif transaction_code == "LO":
+            self.session.is_active = False
+            return
+        else:
+            print("Invalid transaction code.")
 
-      if (re.match(r"[12345]", selected_transaction)):
-        valid_action = True
-      else:
-        print("\nInvalid selection. Enter a valid number to select an action:")
+        if transaction_record:
+            print("Transaction completed.")
+            self.writer.write_transaction_record(transaction_record)
 
-    return selected_transaction 
-  
-  def display_admin_menu(self):
-    valid_action = False
-    selected_transaction = 0
+    def logout(self):
+        transaction_record = self.executor.execute_logout()
+        if transaction_record:
+            self.writer.write_transaction_record(transaction_record)
 
-    print("\nEnter a number to select an action:")
+        print("Logout completed.")
 
-    while (not valid_action):
-      selected_transaction = input("""
-        1. Deposit 
-        2. Withdraw 
-        3. Transfer 
-        4. Pay Bill 
-        5. Create Account 
-        6. Delete Account 
-        7. Disable Account 
-        8. Change Account Plan 
-        9. Logout \n
-      """)
+    def prompt_user_type(self):
+        while True:
+            user_type = input("Enter user type: ").strip().upper()
+            if user_type in ["SU", "AU"]:
+                return user_type
+            else:
+                print("Invalid user type.")
 
-      if (re.match(r"[123456789]", selected_transaction)):
-          valid_action = True
-      else:
-        print("\nInvalid selection. Enter a valid number to select an action:")
+    def prompt_username(self):
+        while True:
+            username = input("Enter account holder name: ").strip().title()
+            if 1 <= len(username) <= 20:
+                return username
+            else:
+                print("Invalid username: Must be 1-20 characters.")
 
-    return selected_transaction
-  
-  def hand_transaction(self, transaction_code):
-    # TODO
+    def prompt_transaction_code(self):
+        while True:
+            transaction_code = input("Enter transaction code: ").strip().upper()
+            if transaction_code in [
+                "DP",
+                "WD",
+                "TR",
+                "PB",
+                "CA",
+                "DE",
+                "DI",
+                "CP",
+                "LO",
+            ]:
+                return transaction_code
+            else:
+                print("Invalid transaction code.")
 
-    return
-  
-  def logout(self):
-    self.logout_flag
-    # TODO: Implement and call logout transaction execution
-    return
-  
-# x = Banking_System()
-# x.display_admin_menu()
+
+if __name__ == "__main__":
+    app = BankingSystem()
+    app.run()

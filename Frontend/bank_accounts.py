@@ -1,4 +1,4 @@
-class Bank_Accounts:
+class BankAccounts:
   def load_accounts(self, filename):
     return
   

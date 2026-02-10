@@ -1,4 +1,4 @@
-class Transaction_Formatter:
+class TransactionFormatter:
   def format_deposit(self):
     return
   
