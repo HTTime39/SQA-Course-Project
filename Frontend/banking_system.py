@@ -14,7 +14,7 @@ class BankingSystem:
     def run(self):
         print("Banking System\n")
         self.login()
-        self.accounts.load_accounts("current_bank_accounts.txt")
+        self.accounts.load_accounts("frontend/current_bank_accounts.txt")
 
         while self.session.is_active:
             if self.session.user_type == "SU":

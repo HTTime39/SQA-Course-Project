@@ -157,8 +157,8 @@ class TransactionExecutor:
             print("Invalid amount.")
 
     def prompt_billing_company(self):
+        self.display_billing_company_menu()
         while True:
-            self.display_billing_company_menu()
             billing_company = input("Enter billing company code: ").strip().upper()
 
             if billing_company in ["EC", "CQ", "FI"]:
