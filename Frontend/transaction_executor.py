@@ -2,11 +2,24 @@ from transaction_formatter import TransactionFormatter
 
 
 class TransactionExecutor:
+    """
+    Executes user-requested banking transactions.
+    """
+
     def __init__(self, accounts):
+        """
+        Constructs a TransactionExecutor object.
+        :param accounts: BankAccounts object
+        """
         self.formatter = TransactionFormatter()
         self.accounts = accounts
 
     def execute_deposit(self, session):
+        """
+        Executes a deposit transaction.
+        :param session: Session object
+        :return: Formatted transaction record string
+        """
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.prompt_account_number(
             "Enter account number: ", account_holder_name
@@ -18,17 +31,27 @@ class TransactionExecutor:
         )
 
     def execute_withdrawal(self, session):
+        """
+        Executes a withdrawal transaction.
+        :param session: Session object
+        :return: Formatted transaction record string
+        """
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.prompt_account_number(
             "Enter account number: ", account_holder_name
         )
-        withdrawal_amount = self.prompt_amount("Enter amount to withdrawal: $")
+        withdrawal_amount = self.prompt_amount("Enter amount to withdraw: $")
 
         return self.formatter.format_withdrawal(
             account_holder_name, account_number, withdrawal_amount
         )
 
     def execute_transfer(self, session):
+        """
+        Executes a transfer transaction.
+        :param session: Session object
+        :return: Formatted transaction record string
+        """
         account_holder_name = self.get_account_holder_name(session)
         from_account_number = self.prompt_account_number(
             "Enter account number of account to transfer from: ", account_holder_name
@@ -43,6 +66,11 @@ class TransactionExecutor:
         )
 
     def execute_pay_bill(self, session):
+        """
+        Executes a pay bill transaction.
+        :param session: Session object
+        :return: Formatted transaction record string
+        """
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.prompt_account_number(
             "Enter account number: ", account_holder_name
@@ -55,6 +83,11 @@ class TransactionExecutor:
         )
 
     def execute_create_account(self, session):
+        """
+        Executes a create account transaction.
+        :param session: Session object
+        :return: Formatted transaction record string or None for standard users
+        """
         if session.user_type != "AU":
             print("Invalid transaction: Privileged.")
             return None
@@ -68,6 +101,11 @@ class TransactionExecutor:
         )
 
     def execute_delete_account(self, session):
+        """
+        Executes a delete account transaction.
+        :param session: Session object
+        :return: Formatted transaction record string or None for standard users
+        """
         if session.user_type != "AU":
             print("Invalid transaction: Privileged.")
             return None
@@ -80,6 +118,11 @@ class TransactionExecutor:
         return self.formatter.format_delete_account(account_holder_name, account_number)
 
     def execute_disable_account(self, session):
+        """
+        Executes a disable account transaction.
+        :param session: Session object
+        :return: Formatted transaction record string or None for standard users
+        """
         if session.user_type != "AU":
             print("Invalid transaction: Privileged.")
             return None
@@ -94,6 +137,11 @@ class TransactionExecutor:
         )
 
     def execute_change_account_plan(self, session):
+        """
+        Executes a change account plan transaction.
+        :param session: Session object
+        :return: Formatted transaction record string or None for standard users
+        """
         if session.user_type != "AU":
             print("Invalid transaction: Privileged.")
             return None
@@ -110,9 +158,18 @@ class TransactionExecutor:
         )
 
     def execute_logout(self):
+        """
+        Executes a logout transaction.
+        :return: Formatted transaction record string
+        """
         return self.formatter.format_logout()
 
     def get_account_holder_name(self, session):
+        """
+        Determines the account holder name based on the user type.
+        :param session: Session object
+        :return: Account holder name string
+        """
         if session.user_type == "AU":
             account_holder_name = self.prompt_account_holder_name()
         else:
@@ -121,6 +178,10 @@ class TransactionExecutor:
         return account_holder_name
 
     def prompt_account_holder_name(self):
+        """
+        Prompts the user to enter an account holder name.
+        :return: Validated account holder name string
+        """
         while True:
             account_holder_name = input("Enter account holder name: ").strip().title()
             if 1 <= len(account_holder_name) <= 20:
@@ -129,23 +190,32 @@ class TransactionExecutor:
                 print("Invalid account holder name: Must be 1-20 characters.")
 
     def prompt_account_number(self, prompt, account_holder_name):
+        """
+        Prompts the user to enter an account number.
+        :param prompt: Prompt message
+        :param account_holder_name: Account holder name
+        :return: Validated account number string
+        """
         while True:
             account_number = input(prompt).strip()
             if not account_number.isdigit():
                 print("Invalid account number: Must be numeric.")
                 continue
-
-            if not self.accounts.account_exists(account_holder_name, account_number):
+            elif not self.accounts.account_exists(account_holder_name, account_number):
                 print("Invalid account: Does not exist.")
                 continue
-
-            if not self.accounts.is_account_active(account_number):
+            elif not self.accounts.is_account_active(account_number):
                 print("Invalid account: Disabled.")
                 continue
 
             return account_number
 
     def prompt_amount(self, prompt):
+        """
+        Prompts the user to enter a monetary amount.
+        :param prompt: Prompt message
+        :return: Formatted amount string
+        """
         while True:
             amount = input(prompt).strip()
             try:
@@ -157,6 +227,10 @@ class TransactionExecutor:
             print("Invalid amount.")
 
     def prompt_billing_company(self):
+        """
+        Prompts the user to enter a billing company code.
+        :return: Validated billing company code string
+        """
         self.display_billing_company_menu()
         while True:
             billing_company = input("Enter billing company code: ").strip().upper()
@@ -167,6 +241,10 @@ class TransactionExecutor:
                 print("Invalid company code.")
 
     def prompt_account_plan(self):
+        """
+        Prompts the user to enter an account plan code.
+        :return: Validated account plan code string
+        """
         while True:
             account_plan = input("Enter account plan: ").strip().upper()
             if account_plan in ["SP", "NP"]:
@@ -175,9 +253,15 @@ class TransactionExecutor:
                 print("Invalid account plan.")
 
     def display_billing_company_menu(self):
+        """
+        Displays the billing company menu.
+        """
         print(
             "\nCompany Menu\nThe Bright Light Electric Company: EC\nCredit Card Company Q: CQ\nFast Internet, Inc.: FI\n"
         )
 
     def display_account_plan_menu(self):
+        """
+        Displays the account plan menu.
+        """
         print("\nAccount Plan Menu\nStudent Plan: SP\nNon-student Plan: NP")
