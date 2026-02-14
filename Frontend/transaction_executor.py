@@ -3,7 +3,8 @@ from transaction_formatter import TransactionFormatter
 
 class TransactionExecutor:
     """
-    Executes user-requested banking transactions.
+    Executes user-requested banking transactions and coordinates
+    user input and transaction formatting.
     """
 
     def __init__(self, accounts):

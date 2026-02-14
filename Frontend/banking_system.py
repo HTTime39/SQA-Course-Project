@@ -81,7 +81,8 @@ class BankingSystem:
         Displays the admin user menu and processes the selected transaction.
         """
         print(
-            "\nAdmin User Menu\nDeposit: DP\nWithdrawal: WD\nTransfer: TR\nPay Bill: PB\nCreate Account: CA\nDelete Account: DE\nDisable Account: DI\nChange Account Plan: CP\nLogout: LO\n"
+            "\nAdmin User Menu\nDeposit: DP\nWithdrawal: WD\nTransfer: TR\nPay Bill: PB\n"
+            + "Create Account: CA\nDelete Account: DE\nDisable Account: DI\nChange Account Plan: CP\nLogout: LO\n"
         )
         transaction_code = self.prompt_transaction_code()
         self.handle_transaction(transaction_code)

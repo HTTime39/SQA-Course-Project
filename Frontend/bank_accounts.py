@@ -2,13 +2,27 @@ import random
 
 
 class BankAccounts:
+    """
+    Manages bank accounts loaded from the input file.
+    Allows for account validation, status checks, balance retrieval,
+    and account number generation.
+    """
+
     def __init__(self):
+        """
+        Constructs a BankAccounts object.
+        """
         self.accounts = []
 
     def load_accounts(self, filename):
+        """
+        Loads bank account records from the input file.
+        Stops reading when the END_OF_FILE record is reached.
+        :param filename: Path to the input file
+        """
         self.accounts = []
         try:
-            with open(filename, "r") as file:  # read through bank account file
+            with open(filename, "r") as file:
                 for record in file:
                     record = record.rstrip("\n")
                     account_number = record[0:5]
@@ -19,7 +33,6 @@ class BankAccounts:
                     if account_holder_name == "END_OF_FILE":
                         break
 
-                    # assign attributes based on account structure
                     account = {
                         "number": account_number,
                         "holder_name": account_holder_name,
@@ -33,8 +46,13 @@ class BankAccounts:
             self.accounts = []
 
     def account_exists(self, account_holder_name, account_number):
-        # check if name on account corresponds to given name
-        # check if account number is valid index
+        """
+        Checks whether an account exists with the provided holder name
+        and account number.
+        :param account_holder_name: Account holder name
+        :param account_number: Account number
+        :return: True if the account exists, False otherwise
+        """
         account_holder_name = account_holder_name.replace(" ", "_").lower()
         for account in self.accounts:
             if (
@@ -45,21 +63,32 @@ class BankAccounts:
         return False
 
     def is_account_active(self, account_number):
-        # check if account number is valid index
-        # check if status is active
+        """
+        Checks whether the account with the provided account number is active.
+        :param account_number: Account number
+        :return: True if the account is active, False otherwise
+        """
         for account in self.accounts:
             if account["number"] == account_number:
                 return account["status"] == "A"
         return False
 
     def get_account_balance(self, account_number):
-        # check if account number is valid index
+        """
+        Retrieves the balance of the account with the provided account number.
+        :param account_number: Account number
+        :return: Account balance as a string, or None if not found
+        """
         for account in self.accounts:
             if account["number"] == account_number:
                 return account["balance"]
         return None
 
     def generate_account_number(self):
+        """
+        Generates a unique 5-digit account number for new accounts.
+        :return: A unique 5-digit account number string
+        """
         existing_account_numbers = {account["number"] for account in self.accounts}
 
         while True:
