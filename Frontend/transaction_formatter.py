@@ -142,7 +142,7 @@ class TransactionFormatter:
         :return: Formatted transaction record string
         """
         transaction_code = "00"
-        return transaction_code + ("_" * 22) + "00000_00000.00_00"
+        return transaction_code + (" " * 22) + "00000 00000.00 00"
 
     def build_transaction_record(
         self,
@@ -166,19 +166,19 @@ class TransactionFormatter:
         amount_field = self.format_amount(amount)
 
         if miscellaneous_data == "":
-            miscellaneous_field = "__"
+            miscellaneous_field = "  "
         else:
             miscellaneous_field = self.format_miscellaneous_data(miscellaneous_data)
 
         transaction_record = (
             transaction_code
-            + "_"
+            + " "
             + account_holder_name_field
-            + "_"
+            + " "
             + account_number_field
-            + "_"
+            + " "
             + amount_field
-            + "_"
+            + " "
             + miscellaneous_field
         )
 
@@ -190,9 +190,9 @@ class TransactionFormatter:
         :param account_holder_name: Account holder name
         :return: Formatted account holder name string
         """
-        account_holder_name = account_holder_name.strip().title().replace(" ", "_")
+        account_holder_name = account_holder_name.strip().title()
         while len(account_holder_name) < 20:
-            account_holder_name += "_"
+            account_holder_name += " "
         return account_holder_name
 
     def format_account_number(self, account_number):
@@ -223,4 +223,4 @@ class TransactionFormatter:
         :param miscellaneous_data: Miscellaneous data value
         :return: Formatted miscellaneous data string
         """
-        return miscellaneous_data.ljust(2, "_")[:2]
+        return miscellaneous_data.ljust(2, " ")[:2]

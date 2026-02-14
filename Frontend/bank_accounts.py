@@ -26,11 +26,11 @@ class BankAccounts:
                 for record in file:
                     record = record.rstrip("\n")
                     account_number = record[0:5]
-                    account_holder_name = record[6:26].rstrip("_")
+                    account_holder_name = record[6:26].rstrip(" ")
                     account_status = record[27]
                     account_balance = record[29:37]
 
-                    if account_holder_name == "END_OF_FILE":
+                    if account_holder_name == "END OF FILE":
                         break
 
                     account = {
@@ -53,7 +53,7 @@ class BankAccounts:
         :param account_number: Account number
         :return: True if the account exists, False otherwise
         """
-        account_holder_name = account_holder_name.replace(" ", "_").lower()
+        account_holder_name = account_holder_name.lower()
         for account in self.accounts:
             if (
                 account["holder_name"].lower() == account_holder_name
