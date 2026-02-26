@@ -19,6 +19,7 @@ from session import Session
 from bank_accounts import BankAccounts
 from transaction_executor import TransactionExecutor
 from transaction_file_writer import TransactionFileWriter
+import sys
 
 
 class BankingSystem:
@@ -27,14 +28,15 @@ class BankingSystem:
     Coordinates user login, menu display, transaction handling, and session termination.
     """
 
-    def __init__(self):
+    def __init__(self, accounts_file, transactions_file):
         """
         Constructs a BankingSystem object.
         """
         self.session = None
         self.accounts = BankAccounts()
         self.executor = TransactionExecutor(self.accounts)
-        self.writer = TransactionFileWriter()
+        self.writer = TransactionFileWriter(transactions_file)
+        self.accounts_file = accounts_file
 
     def run(self):
         """
@@ -42,7 +44,7 @@ class BankingSystem:
         """
         print("Banking System\n")
         self.login()
-        self.accounts.load_accounts("frontend/current_bank_accounts.txt")
+        self.accounts.load_accounts(self.accounts_file)
 
         while self.session.is_active:
             if self.session.user_type == "SU":
@@ -179,5 +181,14 @@ class BankingSystem:
 
 
 if __name__ == "__main__":
-    app = BankingSystem()
+    if len(sys.argv) != 2:
+        print("Usage: python banking_system.py <accounts_file>")
+        sys.exit(1)
+
+    accounts_file = sys.argv[1]
+
+    # Temporary file for transaction records
+    transactions_file = "outputs/bank_account_transactions.txt"
+
+    app = BankingSystem(accounts_file, transactions_file)
     app.run()

@@ -1,0 +1,36 @@
+Banking System
+
+Login Menu
+Standard User: SU
+Admin User: AU
+
+Enter user type: 
+Admin User Menu
+Deposit: DP
+Withdrawal: WD
+Transfer: TR
+Pay Bill: PB
+Create Account: CA
+Delete Account: DE
+Disable Account: DI
+Change Account Plan: CP
+Logout: LO
+
+Enter transaction code: Enter account holder name: Enter account number: 
+Account Plan Menu
+Student Plan: SP
+Non-student Plan: NP
+Enter account plan: Transaction completed.
+
+Admin User Menu
+Deposit: DP
+Withdrawal: WD
+Transfer: TR
+Pay Bill: PB
+Create Account: CA
+Delete Account: DE
+Disable Account: DI
+Change Account Plan: CP
+Logout: LO
+
+Enter transaction code: Logout completed.

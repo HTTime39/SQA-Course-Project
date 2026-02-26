@@ -1,0 +1,30 @@
+Banking System
+
+Login Menu
+Standard User: SU
+Admin User: AU
+
+Enter user type: Enter account holder name: 
+Standard User Menu
+Deposit: DP
+Withdrawal: WD
+Transfer: TR
+Pay Bill: PB
+Logout: LO
+
+Enter transaction code: Enter account number: 
+Company Menu
+The Bright Light Electric Company: EC
+Credit Card Company Q: CQ
+Fast Internet, Inc.: FI
+
+Enter billing company code: Enter amount to pay: $Invalid amount: Cannot result in a negative balance. Enter amount to pay: $Transaction completed.
+
+Standard User Menu
+Deposit: DP
+Withdrawal: WD
+Transfer: TR
+Pay Bill: PB
+Logout: LO
+
+Enter transaction code: Logout completed.
