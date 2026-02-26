@@ -12,7 +12,8 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Enter account number: Enter amount to withdraw: $Transaction completed.
+Enter transaction code: Enter account number: Enter amount to withdraw: $Invalid amount: Session maximum is $500.
+Enter amount to withdraw: $Transaction completed.
 
 Standard User Menu
 Deposit: DP
@@ -21,5 +22,4 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Invalid transaction code.
 Enter transaction code: Logout completed.

@@ -25,7 +25,7 @@ class TransactionExecutor:
         account_number = self.prompt_account_number(
             "Enter account number: ", account_holder_name
         )
-        deposit_amount = self.prompt_amount("Enter amount to deposit: $")
+        deposit_amount = self.prompt_amount("Enter amount to deposit: $", "DP")
 
         return self.formatter.format_deposit(
             account_holder_name, account_number, deposit_amount
@@ -41,7 +41,7 @@ class TransactionExecutor:
         account_number = self.prompt_account_number(
             "Enter account number: ", account_holder_name
         )
-        withdrawal_amount = self.prompt_amount("Enter amount to withdraw: $")
+        withdrawal_amount = self.prompt_amount("Enter amount to withdraw: $", "WD")
 
         return self.formatter.format_withdrawal(
             account_holder_name, account_number, withdrawal_amount
@@ -60,7 +60,7 @@ class TransactionExecutor:
         to_account_number = self.prompt_account_number(
             "Enter account number of account to transfer to: ", account_holder_name
         )
-        transfer_amount = self.prompt_amount("Enter amount to transfer: $")
+        transfer_amount = self.prompt_amount("Enter amount to transfer: $", "TR")
 
         return self.formatter.format_transfer(
             account_holder_name, from_account_number, to_account_number, transfer_amount
@@ -77,7 +77,7 @@ class TransactionExecutor:
             "Enter account number: ", account_holder_name
         )
         billing_company = self.prompt_billing_company()
-        pay_amount = self.prompt_amount("Enter amount to pay: $")
+        pay_amount = self.prompt_amount("Enter amount to pay: $", "PB")
 
         return self.formatter.format_pay_bill(
             account_holder_name, account_number, billing_company, pay_amount
@@ -95,7 +95,9 @@ class TransactionExecutor:
 
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.accounts.generate_account_number()
-        initial_account_balance = self.prompt_amount("Enter initial account balance: $")
+        initial_account_balance = self.prompt_amount(
+            "Enter initial account balance: $", "CA"
+        )
 
         return self.formatter.format_create_account(
             account_holder_name, account_number, initial_account_balance
@@ -211,7 +213,7 @@ class TransactionExecutor:
 
             return account_number
 
-    def prompt_amount(self, prompt):
+    def prompt_amount(self, prompt, transaction_code):
         """
         Prompts the user to enter a monetary amount.
         :param prompt: Prompt message
@@ -219,13 +221,14 @@ class TransactionExecutor:
         """
         while True:
             amount = input(prompt).strip()
-            try:
-                value = float(amount)
-                if value > 0:
-                    return f"{value:.2f}"
-            except ValueError:
-                pass
-            print("Invalid amount.")
+            value = float(amount)
+
+            if transaction_code == "WD" and value > 500:
+                print("Invalid amount: Session maximum is $500.")
+            elif value < 0:
+                print("Invalid amount: Amount cannot be negative.")
+            else:
+                return f"{value:.2f}"
 
     def prompt_billing_company(self):
         """
