@@ -1,4 +1,5 @@
 from transaction_formatter import TransactionFormatter
+from decimal import Decimal, InvalidOperation
 
 
 class TransactionExecutor:
@@ -14,6 +15,7 @@ class TransactionExecutor:
         """
         self.formatter = TransactionFormatter()
         self.accounts = accounts
+        self.account_number = None
 
     def execute_deposit(self, session):
         """
@@ -215,6 +217,7 @@ class TransactionExecutor:
                 print("Invalid account: Disabled.")
                 continue
 
+            self.account_number = account_number
             return account_number
 
     def prompt_amount(self, prompt, transaction_code, session):
@@ -225,14 +228,29 @@ class TransactionExecutor:
         """
         while True:
             amount = input(prompt).strip()
-            value = float(amount)
 
-            if session.user_type == "SU" and transaction_code == "WD" and value > 500:
-                print("Invalid amount: Session maximum is $500.")
-            elif value < 0:
-                print("Invalid amount: Amount cannot be negative.")
-            else:
-                return f"{value:.2f}"
+            try:
+                value = Decimal(amount)
+            except InvalidOperation:
+                print("Invalid amount: Must be numeric.")
+                continue
+
+            if value < Decimal("0.00"):
+                print("Invalid amount: Cannot be negative.")
+                continue
+            elif transaction_code == "WD":
+                if value > Decimal("500.00") and session.user_type == "SU":
+                    print("Invalid amount: Session maximum is $500.")
+                    continue
+
+                account_balance = Decimal(
+                    self.accounts.get_account_balance(self.account_number)
+                )
+                if account_balance - value < Decimal("0.00"):
+                    print("Invalid amount: Cannot result in a negative balance.")
+                    continue
+
+            return f"{value:.2f}"
 
     def prompt_billing_company(self):
         """

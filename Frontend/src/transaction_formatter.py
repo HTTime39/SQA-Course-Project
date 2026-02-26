@@ -1,3 +1,6 @@
+from decimal import Decimal, InvalidOperation
+
+
 class TransactionFormatter:
     """
     Formats banking transactions into fixed-length transaction record strings.
@@ -212,9 +215,10 @@ class TransactionFormatter:
         :return: Formatted amount string
         """
         try:
-            value = float(amount)
-        except ValueError:
-            value = 0.0
+            value = Decimal(amount)
+        except (InvalidOperation, TypeError):
+            value = Decimal("0.00")
+
         return f"{value:08.2f}"
 
     def format_miscellaneous_data(self, miscellaneous_data):

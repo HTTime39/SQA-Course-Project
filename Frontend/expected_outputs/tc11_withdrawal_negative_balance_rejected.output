@@ -12,7 +12,8 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Enter account number: Enter amount to withdraw: $Invalid amount: Cannot result in a negative balance. Enter amount to withdraw: $Transaction completed.
+Enter transaction code: Enter account number: Enter amount to withdraw: $Invalid amount: Cannot result in a negative balance.
+Enter amount to withdraw: $Transaction completed.
 
 Standard User Menu
 Deposit: DP
