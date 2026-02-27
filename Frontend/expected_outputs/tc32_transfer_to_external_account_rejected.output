@@ -12,7 +12,8 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Enter account number of account to transfer from: Enter account number of account to transfer from: Invalid account: Does not exist. Enter account number of account to transfer to: Enter amount to transfer: $Transaction completed.
+Enter transaction code: Enter account number of account to transfer from: Enter account number of account to transfer to: Invalid account: Does not exist.
+Enter account number of account to transfer to: Enter amount to transfer: $Transaction completed.
 
 Standard User Menu
 Deposit: DP
