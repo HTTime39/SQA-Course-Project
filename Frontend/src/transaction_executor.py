@@ -25,7 +25,7 @@ class TransactionExecutor:
         """
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.prompt_account_number(
-            "Enter account number: ", account_holder_name
+            "Enter account number: ", account_holder_name, session
         )
         deposit_amount = self.prompt_amount("Enter amount to deposit: $", "DP", session)
 
@@ -41,7 +41,7 @@ class TransactionExecutor:
         """
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.prompt_account_number(
-            "Enter account number: ", account_holder_name
+            "Enter account number: ", account_holder_name, session
         )
         withdrawal_amount = self.prompt_amount(
             "Enter amount to withdraw: $", "WD", session
@@ -59,16 +59,17 @@ class TransactionExecutor:
         """
         account_holder_name = self.get_account_holder_name(session)
         from_account_number = self.prompt_account_number(
-            "Enter account number of account to transfer from: ", account_holder_name
+            "Enter account number of account to transfer from: ", account_holder_name, session
         )
         while (True): # Looping until a to account is chosen that is not the same as the from account
           to_account_number = self.prompt_account_number(
-              "Enter account number of account to transfer to: ", account_holder_name
+            "Enter account number of account to transfer to: ", account_holder_name, session
           )
-          if (from_account_number != to_account_number):
-              break
+          if to_account_number == from_account_number:
+            print("Invalid transfer: Account numbers are the same.")
           else:
-              print("Invalid account: Cannot transfer money to same account.")
+            break
+
         transfer_amount = self.prompt_amount(
             "Enter amount to transfer: $", "TR", session
         )
@@ -85,7 +86,7 @@ class TransactionExecutor:
         """
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.prompt_account_number(
-            "Enter account number: ", account_holder_name
+            "Enter account number: ", account_holder_name, session
         )
         billing_company = self.prompt_billing_company()
         pay_amount = self.prompt_amount("Enter amount to pay: $", "PB", session)
@@ -104,14 +105,13 @@ class TransactionExecutor:
             print("Invalid transaction: Privileged.")
             return None
 
-        account_holder_name = self.get_account_holder_name(session)
-        account_number = self.accounts.generate_account_number()
-        initial_account_balance = self.prompt_amount(
-            "Enter initial account balance: $", "CA", session
-        )
+        account_holder_name = self.prompt_account_holder_name()
+        account_number = self.generate_account_number()
+        self.display_account_plan_menu()
+        account_plan = self.prompt_account_plan()
 
         return self.formatter.format_create_account(
-            account_holder_name, account_number, initial_account_balance
+            account_holder_name, account_number, account_plan
         )
 
     def execute_delete_account(self, session):
@@ -126,7 +126,7 @@ class TransactionExecutor:
 
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.prompt_account_number(
-            "Enter account number: ", account_holder_name
+            "Enter account number: ", account_holder_name, session
         )
 
         return self.formatter.format_delete_account(account_holder_name, account_number)
@@ -143,7 +143,7 @@ class TransactionExecutor:
 
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.prompt_account_number(
-            "Enter account number: ", account_holder_name
+            "Enter account number: ", account_holder_name, session
         )
 
         return self.formatter.format_disable_account(
@@ -162,7 +162,7 @@ class TransactionExecutor:
 
         account_holder_name = self.get_account_holder_name(session)
         account_number = self.prompt_account_number(
-            "Enter account number: ", account_holder_name
+            "Enter account number: ", account_holder_name, session
         )
         self.display_account_plan_menu()
         account_plan = self.prompt_account_plan()
@@ -170,26 +170,6 @@ class TransactionExecutor:
         return self.formatter.format_change_account_plan(
             account_holder_name, account_number, account_plan
         )
-
-    def execute_logout(self):
-        """
-        Executes a logout transaction.
-        :return: Formatted transaction record string
-        """
-        return self.formatter.format_logout()
-
-    def get_account_holder_name(self, session):
-        """
-        Determines the account holder name based on the user type.
-        :param session: Session object
-        :return: Account holder name string
-        """
-        if session.user_type == "AU":
-            account_holder_name = self.prompt_account_holder_name()
-        else:
-            account_holder_name = session.username
-
-        return account_holder_name
 
     def prompt_account_holder_name(self):
         """
@@ -203,32 +183,71 @@ class TransactionExecutor:
             else:
                 print("Invalid account holder name: Must be 1-20 characters.")
 
-    def prompt_account_number(self, prompt, account_holder_name):
+    def prompt_account_number(self, prompt, account_holder_name, session=None):
         """
         Prompts the user to enter an account number.
         :param prompt: Prompt message
         :param account_holder_name: Account holder name
+        :param session: Session object (optional). Used to format admin vs standard error messages.
         :return: Validated account number string
         """
+        is_admin = session is not None and getattr(session, "user_type", None) == "AU"
+
         while True:
             account_number = input(prompt).strip()
             if not account_number.isdigit():
+                # Keep the original wording for both user types (matches provided expected outputs)
                 print("Invalid account number: Must be numeric.")
                 continue
             elif not self.accounts.account_exists(account_holder_name, account_number):
-                print("Invalid account: Does not exist.")
+                # Expected admin wording differs from standard wording
+                if is_admin:
+                    print("Invalid: Account does not exist.")
+                else:
+                    print("Invalid account: Does not exist.")
                 continue
             elif not self.accounts.is_account_active(account_number):
-                print("Invalid account: Disabled.")
+                if is_admin:
+                    print("Invalid: Account is disabled.")
+                else:
+                    print("Invalid account: Disabled.")
                 continue
 
             self.account_number = account_number
             return account_number
 
+    def prompt_billing_company(self):
+        """
+        Prompts the user to enter a billing company code.
+        :return: Validated billing company code string
+        """
+        while True:
+            billing_company = input("Enter billing company code: ").strip().upper()
+            if billing_company.isalnum() and len(billing_company) == 2:
+                return billing_company
+            else:
+                print("Invalid billing company code: Must be 2 characters.")
+
+    def prompt_account_plan(self):
+        """
+        Prompts the user to select an account plan.
+        :return: Selected account plan string
+        """
+        while True:
+            selection = input("Enter account plan selection: ").strip()
+            if selection == "1":
+                return "SP"
+            elif selection == "2":
+                return "NP"
+            else:
+                print("Invalid selection: Must be 1 or 2.")
+
     def prompt_amount(self, prompt, transaction_code, session):
         """
         Prompts the user to enter a monetary amount.
         :param prompt: Prompt message
+        :param transaction_code: Transaction code (e.g., DP, WD, TR, PB)
+        :param session: Session object
         :return: Formatted amount string
         """
         while True:
@@ -243,21 +262,21 @@ class TransactionExecutor:
             if value < Decimal("0.00"):
                 print("Invalid amount: Cannot be negative.")
                 continue
-            elif (
-                transaction_code == "WD"
-                and value > Decimal("500.00")
-                and session.user_type == "SU"
-            ):
-                print("Invalid amount: Session maximum is $500.")
-                continue
-            elif (
-                transaction_code == "TR"
-                and value > Decimal("1000.00")
-                and session.user_type == "SU"
-            ):
-                print("Invalid amount: Session maximum is $1000.")
-                continue
-            elif transaction_code == "WD" or transaction_code == "TR":
+
+            # Session maximum checks for Standard Users
+            if session.user_type == "SU":
+                if transaction_code == "WD" and value > Decimal("500.00"):
+                    print("Invalid amount: Session maximum is $500.")
+                    continue
+                if transaction_code == "TR" and value > Decimal("1000.00"):
+                    print("Invalid amount: Session maximum is $1000.")
+                    continue
+                if transaction_code == "PB" and value > Decimal("2000.00"):
+                    print("Invalid amount: Session maximum is $2000.")
+                    continue
+
+            # Prevent transactions that would result in a negative balance
+            if transaction_code in {"WD", "TR", "PB"}:
                 account_balance = Decimal(
                     self.accounts.get_account_balance(self.account_number)
                 )
@@ -267,42 +286,33 @@ class TransactionExecutor:
 
             return f"{value:.2f}"
 
-    def prompt_billing_company(self):
-        """
-        Prompts the user to enter a billing company code.
-        :return: Validated billing company code string
-        """
-        self.display_billing_company_menu()
-        while True:
-            billing_company = input("Enter billing company code: ").strip().upper()
-
-            if billing_company in ["EC", "CQ", "FI"]:
-                return billing_company
-            else:
-                print("Invalid company code.")
-
-    def prompt_account_plan(self):
-        """
-        Prompts the user to enter an account plan code.
-        :return: Validated account plan code string
-        """
-        while True:
-            account_plan = input("Enter account plan: ").strip().upper()
-            if account_plan in ["SP", "NP"]:
-                return account_plan
-            else:
-                print("Invalid account plan.")
-
-    def display_billing_company_menu(self):
-        """
-        Displays the billing company menu.
-        """
-        print(
-            "\nCompany Menu\nThe Bright Light Electric Company: EC\nCredit Card Company Q: CQ\nFast Internet, Inc.: FI\n"
-        )
-
     def display_account_plan_menu(self):
         """
-        Displays the account plan menu.
+        Displays the account plan selection menu.
         """
-        print("\nAccount Plan Menu\nStudent Plan: SP\nNon-student Plan: NP")
+        print("Select account plan:")
+        print("1. Student Plan (SP)")
+        print("2. Non-Student Plan (NP)")
+
+    def generate_account_number(self):
+        """
+        Generates a unique account number not currently in use.
+        :return: Account number string
+        """
+        while True:
+            account_number = str(random.randint(10000, 99999))
+            if not self.accounts.account_number_in_use(account_number):
+                return account_number
+
+    def get_account_holder_name(self, session):
+        """
+        Determines the account holder name based on the user type.
+        :param session: Session object
+        :return: Account holder name string
+        """
+        if session.user_type == "AU":
+            account_holder_name = self.prompt_account_holder_name()
+        else:
+            account_holder_name = session.username
+
+        return account_holder_name
