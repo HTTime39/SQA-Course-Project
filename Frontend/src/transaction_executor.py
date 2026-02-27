@@ -243,11 +243,21 @@ class TransactionExecutor:
             if value < Decimal("0.00"):
                 print("Invalid amount: Cannot be negative.")
                 continue
-            elif transaction_code == "WD":
-                if value > Decimal("500.00") and session.user_type == "SU":
-                    print("Invalid amount: Session maximum is $500.")
-                    continue
-
+            elif (
+                transaction_code == "WD"
+                and value > Decimal("500.00")
+                and session.user_type == "SU"
+            ):
+                print("Invalid amount: Session maximum is $500.")
+                continue
+            elif (
+                transaction_code == "TR"
+                and value > Decimal("1000.00")
+                and session.user_type == "SU"
+            ):
+                print("Invalid amount: Session maximum is $1000.")
+                continue
+            elif transaction_code == "WD" or transaction_code == "TR":
                 account_balance = Decimal(
                     self.accounts.get_account_balance(self.account_number)
                 )

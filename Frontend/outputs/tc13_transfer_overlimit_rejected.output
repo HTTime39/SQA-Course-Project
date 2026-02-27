@@ -12,7 +12,8 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Enter account number of account to transfer from: Enter account number of account to transfer to: Enter amount to transfer: $Transaction completed.
+Enter transaction code: Enter account number of account to transfer from: Enter account number of account to transfer to: Enter amount to transfer: $Invalid amount: Session maximum is $1000.
+Enter amount to transfer: $Transaction completed.
 
 Standard User Menu
 Deposit: DP
@@ -21,5 +22,4 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Invalid transaction code.
 Enter transaction code: Logout completed.
