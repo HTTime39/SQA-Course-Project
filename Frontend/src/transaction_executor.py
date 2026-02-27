@@ -61,9 +61,14 @@ class TransactionExecutor:
         from_account_number = self.prompt_account_number(
             "Enter account number of account to transfer from: ", account_holder_name
         )
-        to_account_number = self.prompt_account_number(
-            "Enter account number of account to transfer to: ", account_holder_name
-        )
+        while (True): # Looping until a to account is chosen that is not the same as the from account
+          to_account_number = self.prompt_account_number(
+              "Enter account number of account to transfer to: ", account_holder_name
+          )
+          if (from_account_number != to_account_number):
+              break
+          else:
+              print("Invalid account: Cannot transfer money to same account.")
         transfer_amount = self.prompt_amount(
             "Enter amount to transfer: $", "TR", session
         )
