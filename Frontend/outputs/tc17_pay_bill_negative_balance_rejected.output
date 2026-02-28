@@ -18,7 +18,8 @@ The Bright Light Electric Company: EC
 Credit Card Company Q: CQ
 Fast Internet, Inc.: FI
 
-Enter billing company code: Enter amount to pay: $Transaction completed.
+Enter billing company code: Enter amount to pay: $Invalid amount: Cannot result in a negative balance.
+Enter amount to pay: $Transaction completed.
 
 Standard User Menu
 Deposit: DP
@@ -27,5 +28,4 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Invalid transaction code.
 Enter transaction code: Logout completed.

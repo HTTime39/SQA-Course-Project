@@ -12,14 +12,8 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Enter account number: 
-Company Menu
-The Bright Light Electric Company: EC
-Credit Card Company Q: CQ
-Fast Internet, Inc.: FI
-
-Enter billing company code: Enter amount to pay: $Invalid amount: Session maximum is $2000.
-Enter amount to pay: $Transaction completed.
+Enter transaction code: Enter account number: Invalid account: Does not exist.
+Enter account number: Enter amount to deposit: $Transaction completed.
 
 Standard User Menu
 Deposit: DP

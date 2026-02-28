@@ -12,7 +12,8 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Enter account number: Enter amount to deposit: $Transaction completed.
+Enter transaction code: Enter account number: Invalid account: Does not exist.
+Enter account number: Enter amount to deposit: $Transaction completed.
 
 Standard User Menu
 Deposit: DP
@@ -21,5 +22,4 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Invalid transaction code.
 Enter transaction code: Logout completed.
