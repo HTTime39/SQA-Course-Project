@@ -16,8 +16,8 @@ Disable Account: DI
 Change Account Plan: CP
 Logout: LO
 
-Enter transaction code: Enter account holder name: Invalid account holder name: Must be 1-20 characters.
-Enter account holder name: Enter initial account balance: $Transaction completed.
+Enter transaction code: Enter account holder name: Enter account number: Invalid account: Does not exist.
+Enter account number: Enter amount to deposit: $Transaction completed.
 
 Admin User Menu
 Deposit: DP

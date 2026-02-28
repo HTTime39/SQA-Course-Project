@@ -12,7 +12,7 @@ Transfer: TR
 Pay Bill: PB
 Logout: LO
 
-Enter transaction code: Enter account number of account to transfer from: Enter account number of account to transfer to: Invalid account: Cannot transfer money to same account.
+Enter transaction code: Enter account number of account to transfer from: Enter account number of account to transfer to: Invalid account: Cannot transfer money to the same account.
 Enter account number of account to transfer to: Enter amount to transfer: $Transaction completed.
 
 Standard User Menu

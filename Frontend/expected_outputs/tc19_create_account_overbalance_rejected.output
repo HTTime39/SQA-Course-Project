@@ -16,13 +16,18 @@ Disable Account: DI
 Change Account Plan: CP
 Logout: LO
 
-Enter transaction code: Enter account holder name: Enter initial account balance: $Invalid amount: Initial balance maximum is $99999.99. Enter initial account balance: $Transaction completed.
+Enter transaction code: Enter account holder name: Enter initial account balance: $Invalid amount: Initial balance maximum is $99999.99.
+Enter initial account balance: $Transaction completed.
 
-Standard User Menu
+Admin User Menu
 Deposit: DP
 Withdrawal: WD
 Transfer: TR
 Pay Bill: PB
+Create Account: CA
+Delete Account: DE
+Disable Account: DI
+Change Account Plan: CP
 Logout: LO
 
 Enter transaction code: Logout completed.

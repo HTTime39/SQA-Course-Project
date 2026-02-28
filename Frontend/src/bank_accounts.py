@@ -86,12 +86,17 @@ class BankAccounts:
 
     def generate_account_number(self):
         """
-        Generates a unique 5-digit account number for new accounts.
+        Generates a unique 5-digit account number for new accounts, sequentially.
         :return: A unique 5-digit account number string
         """
-        existing_account_numbers = {account["number"] for account in self.accounts}
+        if not self.accounts:
+            return "00001"
 
-        while True:
-            account_number = f"{random.randint(0, 99999):05d}"
-            if account_number not in existing_account_numbers:
-                return account_number
+        existing_numbers = [
+            int(account["number"])
+            for account in self.accounts
+            if account["number"].isdigit()
+        ]
+
+        next_number = max(existing_numbers) + 1
+        return f"{next_number:05d}"

@@ -1,4 +1,4 @@
 12345 John Doe             A 00100.00
 54321 John Doe             A 00100.00
-00001 Jane Doe             A 00100.00
+54322 Jane Doe             A 00100.00
 00000 END OF FILE          A 00000.00

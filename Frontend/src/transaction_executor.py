@@ -69,7 +69,7 @@ class TransactionExecutor:
             if from_account_number != to_account_number:
                 break
             else:
-                print("Invalid account: Cannot transfer money to same account.")
+                print("Invalid account: Cannot transfer money to the same account.")
         transfer_amount = self.prompt_amount(
             "Enter amount to transfer: $", "TR", session
         )
@@ -264,6 +264,13 @@ class TransactionExecutor:
                 and session.user_type == "SU"
             ):
                 print("Invalid amount: Session maximum is $2000.")
+                continue
+            elif (
+                transaction_code == "CA"
+                and value > Decimal("99999.99")
+                and session.user_type == "AU"
+            ):
+                print("Invalid amount: Initial balance maximum is $99999.99.")
                 continue
             elif transaction_code in {"WD", "TR", "PB"}:
                 account_balance = Decimal(

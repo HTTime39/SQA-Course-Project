@@ -16,7 +16,8 @@ Disable Account: DI
 Change Account Plan: CP
 Logout: LO
 
-Enter transaction code: Enter account holder name: Enter initial account balance: $Transaction completed.
+Enter transaction code: Enter account holder name: Enter initial account balance: $Invalid amount: Initial balance maximum is $99999.99.
+Enter initial account balance: $Transaction completed.
 
 Admin User Menu
 Deposit: DP
@@ -29,5 +30,4 @@ Disable Account: DI
 Change Account Plan: CP
 Logout: LO
 
-Enter transaction code: Invalid transaction code.
 Enter transaction code: Logout completed.
