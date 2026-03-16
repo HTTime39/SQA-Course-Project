@@ -1,28 +1,29 @@
-import sys
 class TransactionFileReader:
+    """
+    Handles reading transaction records from the
+    'merged bank account transactions' file.
+    """
 
     def __init__(self, merged_bank_account_transactions_file):
-        self.merged_bank_account_transactions_file = merged_bank_account_transactions_file
+        """
+        Constructs a TransactionFileReader object.
+        :param merged_bank_account_transactions_file: 'Merged bank account transactions' file path
+        """
+        self.merged_bank_account_transactions_file = (
+            merged_bank_account_transactions_file
+        )
 
     def read_transaction_records(self):
-        
+        """
+        Reads all transaction records from the 'merged bank account transactions' file.
+        :return: List of all transaction records
+        """
         transaction_records = []
 
-        try:
-
-            with open(self.merged_bank_account_transactions_file, 'r') as file:
-
-                for line in file:
-
-                    record = line.strip('\n') # get transaction record
-                    if len(record) != 40: # If not of appropriate length
-                        print(f"ERROR: Bad input length in file '{self.merged_bank_account_transactions_file}'")
-                        sys.exit(1)
-                    transaction_records.append(record)
-
-        except FileNotFoundError: # if not found
-
-            print(f"ERROR: Transaction file '{self.merged_bank_account_transactions_file}' was not found")
-            sys.exit(1)
+        with open(self.merged_bank_account_transactions_file, "r") as file:
+            for line in file:
+                line = line.rstrip("\n")
+                if line:
+                    transaction_records.append(line)
 
         return transaction_records

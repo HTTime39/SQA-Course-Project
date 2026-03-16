@@ -1,19 +1,45 @@
 class TransactionRecordParser:
+    """
+    Parses transaction records.
+    """
 
     def parse_transaction_code(self, transaction_record):
-        return transaction_record[0:2].strip() # first two chars are transaction code
+        """
+        Parses the transaction code from a transaction record.
+        :param transaction_record: Transaction record
+        :return: Transaction code
+        """
+        return transaction_record[0:2]
 
     def parse_account_holder_name(self, transaction_record):
-        return transaction_record[3:23].strip() # next 20 chars (after _) are name
+        """
+        Parses the account holder name from a transaction record.
+        :param transaction_record: Transaction record
+        :return: Account holder name
+        """
+        return transaction_record[3:23].strip()
 
     def parse_account_number(self, transaction_record):
-        return transaction_record[24:29].strip() # next 5 chars (after _) are acc number
+        """
+        Parses the account number from a transaction record.
+        :param transaction_record: Transaction record
+        :return: Account number
+        """
+        return transaction_record[24:29].strip()
 
     def parse_amount(self, transaction_record):
-        
-        amount_str = transaction_record[30:38].strip() # next 8 chars (after _) are amount
-        try: return float(amount_str) # if valid float
-        except ValueError: return 0.0 # otherwise
+        """
+        Parses the amount from a transaction record.
+        :param transaction_record: Transaction record
+        :return: Amount
+        """
+        amount = transaction_record[30:38].strip()
+        return float(amount) if amount else 0.0
 
     def parse_misc_data(self, transaction_record):
-        return transaction_record[39:].strip() # last chars are misc
+        """
+        Parses the miscellaneous data from a transaction record.
+        :param transaction_record: Transaction record
+        :return: Miscellaneous data
+        """
+        return transaction_record[39:41].strip()
