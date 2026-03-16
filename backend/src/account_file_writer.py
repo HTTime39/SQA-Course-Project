@@ -10,14 +10,16 @@ class AccountFileWriter:
 
     def write_new_master_bank_accounts_file(self, accounts, new_master_bank_accounts_file):
         """
-        Writes the collection of updated account records to the ‘new master bank accounts’ file using formatted account records.
+        Writes the collection of updated account records to the "new master bank accounts" file using formatted account records.
         """
-        with open(new_master_bank_accounts_file, "w") as file:
-            file.write(accounts + "\n")
+        with open(new_master_bank_accounts_file, "a") as file:
+            for account in accounts:
+                file.write(account + "\n")
 
     def write_current_bank_accounts_file(self, accounts, current_bank_accounts_file):
         """
-        Writes the collection of active account records to the ‘current bank accounts’ file to be used by future front-end sessions.
+        Writes the collection of active account records to the "current bank accounts" file to be used by future front-end sessions.
         """
         with open(current_bank_accounts_file, "a") as file:
-            file.write(accounts + "\n")
+            for account in accounts:
+                file.write(accounts + "\n")
