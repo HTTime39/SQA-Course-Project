@@ -26,10 +26,33 @@ class AreFundsSufficientStatementCoverageTest(unittest.TestCase):
         self.accounts = BankAccounts()
 
     def test_sc01_insufficient_funds_error(self):
-        pass
+        """
+        SC01_Insufficient_Funds_Error
+
+        The account has insufficient funds, so the method should
+        return False and display the expected error message.
+        """
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            result = self.accounts.are_funds_sufficient("12345", 100.00, 150.00)
+
+        self.assertFalse(result)
+        self.assertIn(
+            "ERROR: Account 12345 has insufficient funds.", captured_output.getvalue()
+        )
 
     def test_sc02_sufficient_funds(self):
-        pass
+        """
+        SC02_Sufficient_Funds
+
+        The account has sufficient funds, so the method should return True.
+        """
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            result = self.accounts.are_funds_sufficient("12345", 100.00, 50.00)
+
+        self.assertTrue(result)
+        self.assertEqual(captured_output.getvalue(), "")
 
 
 class ExecuteTransferDecisionAndLoopCoverageTest(unittest.TestCase):
