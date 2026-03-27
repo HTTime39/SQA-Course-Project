@@ -107,10 +107,72 @@ class ExecuteTransferDecisionAndLoopCoverageTest(unittest.TestCase):
         )
 
     def test_dlc03_two_loop_iterations_match(self):
-        pass
+        """
+        DLC03_Two_Loop_Iterations_Match
+
+        The loop executes twice, and a destination account is found on the second iteration.
+        """
+
+        self.accounts.accounts = {
+            
+            "12345": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 100.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+
+            "54321": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 50.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+
+        }
+
+        self.executor.execute_transfer("12345", "54", 50.00)
+        self.assertEqual(self.accounts.accounts["12345"]["balance"], 50.00)
+        self.assertEqual(self.accounts.accounts["54321"]["balance"], 100.00)
+        self.assertEqual(self.accounts.accounts["12345"]["num_transactions"], 1)
+
 
     def test_dlc04_disabled_destination_account(self):
-        pass
+        """
+        DLC03_Two_Loop_Iterations_Match
+
+        The loop executes twice, and a destination account is found on the second iteration.
+        """
+
+        self.accounts.accounts = {
+            
+            "12345": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 100.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+
+            "54321": {
+                "holder_name": "John Doe",
+                "status": "D",
+                "balance": 50.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+
+        }
+
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            self.executor.execute_transfer("12345", "54", 50.00)
+
+        self.assertEqual(self.accounts.accounts["12345"]["balance"], 100.00)
+        self.assertEqual(self.accounts.accounts["54321"]["balance"], 50.00)
+        self.assertEqual(self.accounts.accounts["12345"]["num_transactions"], 0)
 
     def test_dlc05_insufficient_funds(self):
         """
