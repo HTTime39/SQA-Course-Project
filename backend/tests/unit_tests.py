@@ -45,10 +45,66 @@ class ExecuteTransferDecisionAndLoopCoverageTest(unittest.TestCase):
         self.executor = TransactionExecutor(self.accounts)
 
     def test_dlc01_invalid_source_account(self):
-        pass
+        """
+        DLC01_Invalid_Source_Account
+
+        The chosen account to transfer from is invalid.
+        """
+        self.accounts.accounts = {
+            "12345": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 25.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+            "54321": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 100.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+        }
+
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            self.executor.execute_transfer("00000", "54", 50.00)
+
+        self.assertIn(
+            "ERROR: Source account 00000 not found.", captured_output.getvalue()
+        )
 
     def test_dlc02_one_loop_iteration_no_match(self):
-        pass
+        """
+        DLC02_One_Loop_Iteration_No_Match
+
+        The loop executes once, and no destination account is found.
+        """
+        self.accounts.accounts = {
+            "12345": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 25.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+            "54321": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 100.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+        }
+
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            self.executor.execute_transfer("12345", "00", 50.00)
+
+        self.assertIn(
+            "ERROR: Destination account not found.", captured_output.getvalue()
+        )
 
     def test_dlc03_two_loop_iterations_match(self):
         pass

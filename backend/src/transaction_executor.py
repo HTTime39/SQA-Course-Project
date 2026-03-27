@@ -46,6 +46,7 @@ class TransactionExecutor:
         :param amount: Amount to transfer
         """
         if not self.accounts.is_account_valid(from_account_number):
+            print(f"ERROR: Source account {from_account_number} not found.")
             return
 
         from_account = self.accounts.accounts[from_account_number]
