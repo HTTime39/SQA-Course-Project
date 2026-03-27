@@ -29,8 +29,8 @@ class AreFundsSufficientStatementCoverageTest(unittest.TestCase):
         """
         SC01_Insufficient_Funds_Error
 
-        The account has insufficient funds, so the method should
-        return False and display the expected error message.
+        The condition evaluates to True.
+        The method should return False and display an error message.
         """
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -45,7 +45,8 @@ class AreFundsSufficientStatementCoverageTest(unittest.TestCase):
         """
         SC02_Sufficient_Funds
 
-        The account has sufficient funds, so the method should return True.
+        The condition evaluates to False.
+        The method should return True.
         """
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
@@ -71,130 +72,104 @@ class ExecuteTransferDecisionAndLoopCoverageTest(unittest.TestCase):
         """
         DLC01_Invalid_Source_Account
 
-        The chosen account to transfer from is invalid.
+        The source account is invalid.
+        The method should return before entering the loop.
         """
-        self.accounts.accounts = {
-            "12345": {
-                "holder_name": "John Doe",
-                "status": "A",
-                "balance": 25.00,
-                "num_transactions": 0,
-                "plan": "SP",
-            },
-            "54321": {
-                "holder_name": "John Doe",
-                "status": "A",
-                "balance": 100.00,
-                "num_transactions": 0,
-                "plan": "SP",
-            },
-        }
-
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
             self.executor.execute_transfer("00000", "54", 50.00)
 
         self.assertIn(
-            "ERROR: Source account 00000 not found.", captured_output.getvalue()
+            "ERROR: Account 00000 does not exist.", captured_output.getvalue()
         )
+        self.assertEqual(self.accounts.accounts, {})
 
     def test_dlc02_one_loop_iteration_no_match(self):
         """
         DLC02_One_Loop_Iteration_No_Match
 
-        The loop executes once, and no destination account is found.
+        Only the source account exists.
+        The loop executes once and no destination account is found.
         """
         self.accounts.accounts = {
-            "12345": {
-                "holder_name": "John Doe",
-                "status": "A",
-                "balance": 25.00,
-                "num_transactions": 0,
-                "plan": "SP",
-            },
-            "54321": {
-                "holder_name": "John Doe",
-                "status": "A",
-                "balance": 100.00,
-                "num_transactions": 0,
-                "plan": "SP",
-            },
-        }
-
-        captured_output = io.StringIO()
-        with redirect_stdout(captured_output):
-            self.executor.execute_transfer("12345", "00", 50.00)
-
-        self.assertIn(
-            "ERROR: Destination account not found.", captured_output.getvalue()
-        )
-
-    def test_dlc03_two_loop_iterations_match(self):
-        """
-        DLC03_Two_Loop_Iterations_Match
-
-        The loop executes twice, and a destination account is found on the second iteration.
-        """
-
-        self.accounts.accounts = {
-            
             "12345": {
                 "holder_name": "John Doe",
                 "status": "A",
                 "balance": 100.00,
                 "num_transactions": 0,
                 "plan": "SP",
-            },
-
-            "54321": {
-                "holder_name": "John Doe",
-                "status": "A",
-                "balance": 50.00,
-                "num_transactions": 0,
-                "plan": "SP",
-            },
-
-        }
-
-        self.executor.execute_transfer("12345", "54", 50.00)
-        self.assertEqual(self.accounts.accounts["12345"]["balance"], 50.00)
-        self.assertEqual(self.accounts.accounts["54321"]["balance"], 100.00)
-        self.assertEqual(self.accounts.accounts["12345"]["num_transactions"], 1)
-
-
-    def test_dlc04_disabled_destination_account(self):
-        """
-        DLC03_Two_Loop_Iterations_Match
-
-        The loop executes twice, and a destination account is found on the second iteration.
-        """
-
-        self.accounts.accounts = {
-            
-            "12345": {
-                "holder_name": "John Doe",
-                "status": "A",
-                "balance": 100.00,
-                "num_transactions": 0,
-                "plan": "SP",
-            },
-
-            "54321": {
-                "holder_name": "John Doe",
-                "status": "D",
-                "balance": 50.00,
-                "num_transactions": 0,
-                "plan": "SP",
-            },
-
+            }
         }
 
         captured_output = io.StringIO()
         with redirect_stdout(captured_output):
             self.executor.execute_transfer("12345", "54", 50.00)
 
+        self.assertIn(
+            "ERROR: Destination account not found.", captured_output.getvalue()
+        )
         self.assertEqual(self.accounts.accounts["12345"]["balance"], 100.00)
-        self.assertEqual(self.accounts.accounts["54321"]["balance"], 50.00)
+        self.assertEqual(self.accounts.accounts["12345"]["num_transactions"], 0)
+
+    def test_dlc03_two_loop_iterations_match(self):
+        """
+        DLC03_Two_Loop_Iterations_Match
+
+        The destination account is found on the second iteration.
+        """
+        self.accounts.accounts = {
+            "12345": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 100.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+            "54321": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 100.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+        }
+
+        self.executor.execute_transfer("12345", "54", 50.00)
+
+        self.assertEqual(self.accounts.accounts["12345"]["balance"], 50.00)
+        self.assertEqual(self.accounts.accounts["54321"]["balance"], 150.00)
+        self.assertEqual(self.accounts.accounts["12345"]["num_transactions"], 1)
+
+    def test_dlc04_disabled_destination_account(self):
+        """
+        DLC04_Disabled_Destination_Account
+
+        The destination account is found, but disabled.
+        """
+        self.accounts.accounts = {
+            "12345": {
+                "holder_name": "John Doe",
+                "status": "A",
+                "balance": 100.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+            "54321": {
+                "holder_name": "John Doe",
+                "status": "D",
+                "balance": 100.00,
+                "num_transactions": 0,
+                "plan": "SP",
+            },
+        }
+
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            self.executor.execute_transfer("12345", "54", 50.00)
+
+        self.assertIn("ERROR: Account 54321 is disabled.", captured_output.getvalue())
+        self.assertEqual(self.accounts.accounts["12345"]["balance"], 100.00)
+        self.assertEqual(self.accounts.accounts["54321"]["balance"], 100.00)
         self.assertEqual(self.accounts.accounts["12345"]["num_transactions"], 0)
 
     def test_dlc05_insufficient_funds(self):
@@ -241,7 +216,7 @@ class ExecuteTransferDecisionAndLoopCoverageTest(unittest.TestCase):
             "12345": {
                 "holder_name": "John Doe",
                 "status": "A",
-                "balance": 300.00,
+                "balance": 100.00,
                 "num_transactions": 0,
                 "plan": "SP",
             },
@@ -268,11 +243,12 @@ class ExecuteTransferDecisionAndLoopCoverageTest(unittest.TestCase):
             },
         }
 
-        self.executor.execute_transfer("12345", "54", 75.00)
+        self.executor.execute_transfer("12345", "54", 50.00)
 
-        self.assertEqual(self.accounts.accounts["12345"]["balance"], 225.00)
-        self.assertEqual(self.accounts.accounts["54321"]["balance"], 175.00)
+        self.assertEqual(self.accounts.accounts["12345"]["balance"], 50)
+        self.assertEqual(self.accounts.accounts["54321"]["balance"], 150.00)
         self.assertEqual(self.accounts.accounts["12345"]["num_transactions"], 1)
+        self.assertEqual(self.accounts.accounts["11111"]["balance"], 100.00)
         self.assertEqual(self.accounts.accounts["22222"]["balance"], 100.00)
 
 
