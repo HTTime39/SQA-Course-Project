@@ -1,18 +1,20 @@
 """
-Banking System
+Banking System Frontend
 
 This program allows users to log in as either a standard user (SU) or an admin user (AU)
 and perform banking transactions through a menu. For each transaction, a formatted
 transaction record is generated and stored.
 
-The input file 'current_bank_accounts.txt' contains the list of existing bank accounts.
-The output file 'bank_account_transactions.txt' contains the transaction records generated
-during a session.
+Input files:
+- current_bank_accounts.txt: Contains the list of existing bank accounts.
+
+Output files:
+- bank_account_transactions.txt: Contains the transaction records generated during a session.
 
 Instructions:
-- Run this file: banking_system.py
-- Follow the console prompts to log in and perform transactions.
-- Select the logout (LO) option to end a session.
+1. Open the terminal
+2. Change the directory to 'frontend/src': cd frontend/src
+3. Run this file: python banking_system_frontend.py <current_bank_accounts_file> <bank_account_transactions_file>
 """
 
 from session import Session
@@ -28,15 +30,15 @@ class BankingSystemFrontend:
     Coordinates user login, menu display, transaction handling, and session termination.
     """
 
-    def __init__(self, accounts_file, transactions_file):
+    def __init__(self, current_bank_accounts_file, bank_account_transactions_file):
         """
-        Constructs a BankingSystem object.
+        Constructs a BankingSystemFrontend object.
         """
         self.session = None
         self.accounts = BankAccounts()
         self.executor = TransactionExecutor(self.accounts)
-        self.writer = TransactionFileWriter(transactions_file)
-        self.accounts_file = accounts_file
+        self.writer = TransactionFileWriter(bank_account_transactions_file)
+        self.current_bank_accounts_file = current_bank_accounts_file
 
     def run(self):
         """
@@ -44,7 +46,7 @@ class BankingSystemFrontend:
         """
         print("Banking System\n")
         self.login()
-        self.accounts.load_accounts(self.accounts_file)
+        self.accounts.load_accounts(self.current_bank_accounts_file)
 
         while self.session.is_active:
             if self.session.user_type == "SU":
@@ -181,14 +183,16 @@ class BankingSystemFrontend:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python banking_system.py <accounts_file>")
+    if len(sys.argv) != 3:
+        print(
+            "Usage: python banking_system_frontend.py <current_bank_accounts_file> <bank_account_transactions_file>"
+        )
         sys.exit(1)
 
-    accounts_file = sys.argv[1]
+    current_bank_accounts_file = sys.argv[1]
+    bank_account_transactions_file = sys.argv[2]
 
-    # Temporary file for transaction records
-    transactions_file = "outputs/bank_account_transactions.txt"
-
-    app = BankingSystemFrontend(accounts_file, transactions_file)
+    app = BankingSystemFrontend(
+        current_bank_accounts_file, bank_account_transactions_file
+    )
     app.run()

@@ -2,9 +2,9 @@
 Banking System Backend
 
 The backend of the program first loads accounts from the 'master bank accounts' file.
-Afterwards, it reads transaction records from the 'merged bank account transaction' file.
+Afterwards, it reads transaction records from the 'merged bank account transactions' file.
 It then processes and executes transactions based on the transaction records.
-Finally, it writes an updated 'master bank accounts' and 'current bank accounts' file to output.
+Finally, it writes an updated 'master bank accounts' file and 'current bank accounts' file.
 
 Input files:
 - master_bank_accounts.txt: Contains all bank accounts.
@@ -17,13 +17,16 @@ Output files:
 Instructions:
 1. Open the terminal
 2. Change the directory to 'backend/src': cd backend/src
-3. Run this file: python banking_system_backend.py
+3. Run this file:
+   python banking_system_backend.py <master_bank_accounts_file> <merged_bank_account_transactions_file>
+   <new_master_bank_accounts_file> <current_bank_accounts_file>
 """
 
 from bank_accounts import BankAccounts
 from transaction_file_reader import TransactionFileReader
 from transaction_processor import TransactionProcessor
 from account_file_writer import AccountFileWriter
+import sys
 
 
 class BankingSystemBackend:
@@ -40,9 +43,9 @@ class BankingSystemBackend:
         current_bank_accounts_file,
     ):
         """
-        Constructs BankingSystemBackend objects.
+        Constructs a BankingSystemBackend object.
         :param master_bank_accounts_file: 'Master bank accounts' file path
-        :param merged_bank_account_transactions_file: 'Merged bank accounts' file path
+        :param merged_bank_account_transactions_file: 'Merged bank account transactions' file path
         :param new_master_bank_accounts_file: 'New master bank accounts' file path
         :param current_bank_accounts_file: 'Current bank accounts' file path
         """
@@ -52,7 +55,6 @@ class BankingSystemBackend:
         )
         self.new_master_bank_accounts_file = new_master_bank_accounts_file
         self.current_bank_accounts_file = current_bank_accounts_file
-
         self.accounts = BankAccounts()
 
     def run(self):
@@ -88,8 +90,8 @@ class BankingSystemBackend:
         Writes output files.
         """
         writer = AccountFileWriter()
-
         accounts = self.accounts.get_all_accounts()
+
         writer.write_new_master_bank_accounts_file(
             accounts, self.new_master_bank_accounts_file
         )
@@ -99,13 +101,20 @@ class BankingSystemBackend:
 
 
 if __name__ == "__main__":
+    if len(sys.argv) != 5:
+        print(
+            "Usage: python banking_system_backend.py "
+            "<master_bank_accounts_file> "
+            "<merged_bank_account_transactions_file> "
+            "<new_master_bank_accounts_file> "
+            "<current_bank_accounts_file>"
+        )
+        sys.exit(1)
 
-    master_bank_accounts_file = "../inputs/master_bank_accounts.txt"
-    merged_bank_account_transactions_file = (
-        "../inputs/merged_bank_account_transactions.txt"
-    )
-    new_master_bank_accounts_file = "../outputs/new_master_bank_accounts.txt"
-    current_bank_accounts_file = "../outputs/current_bank_accounts.txt"
+    master_bank_accounts_file = sys.argv[1]
+    merged_bank_account_transactions_file = sys.argv[2]
+    new_master_bank_accounts_file = sys.argv[3]
+    current_bank_accounts_file = sys.argv[4]
 
     backend = BankingSystemBackend(
         master_bank_accounts_file,
