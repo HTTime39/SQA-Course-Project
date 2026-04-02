@@ -2,11 +2,11 @@
 shopt -s nullglob
 
 # Directory configuration
-INPUT_DIR="inputs"
-OUTPUT_DIR="outputs"
+INPUT_DIR="inputs/test_case_inputs"
+OUTPUT_DIR="outputs/test_case_outputs"
 SRC_DIR="src"
-ACCOUNTS_FILE="$INPUT_DIR/current_bank_accounts.txt"
-TRANSACTION_FILE="$OUTPUT_DIR/bank_account_transactions.txt"
+CURRENT_BANK_ACCOUNTS_FILE="inputs/current_bank_accounts.txt"
+BANK_ACCOUNT_TRANSACTION_FILE="outputs/bank_account_transactions.txt"
 
 # Clean output directory
 rm -f "$OUTPUT_DIR"/*
@@ -20,14 +20,14 @@ do
     echo "Running $test_name"
 
     # Run frontend with redirected input and capture output
-    python "$SRC_DIR/banking_system.py" \
-        "$ACCOUNTS_FILE" \
+    python "$SRC_DIR/banking_system_frontend.py" \
+        "$CURRENT_BANK_ACCOUNTS_FILE" \
         < "$input_file" \
         > "$OUTPUT_DIR/$test_name.output"
 
     # Rename generated transaction record files
-    if [[ -f "$TRANSACTION_FILE" ]]; then
-        mv "$TRANSACTION_FILE" "$OUTPUT_DIR/$test_name.record"
+    if [[ -f "$BANK_ACCOUNT_TRANSACTION_FILE" ]]; then
+        mv "$BANK_ACCOUNT_TRANSACTION_FILE" "$OUTPUT_DIR/$test_name.record"
     fi
 done
 

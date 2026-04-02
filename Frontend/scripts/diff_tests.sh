@@ -2,7 +2,7 @@
 
 # Directory configuration
 EXPECTED="expected_outputs"
-ACTUAL="outputs"
+ACTUAL="outputs/test_case_outputs"
 
 # Compare test files
 for expected_file in "$EXPECTED"/*

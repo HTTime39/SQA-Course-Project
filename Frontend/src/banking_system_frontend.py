@@ -22,7 +22,7 @@ from transaction_file_writer import TransactionFileWriter
 import sys
 
 
-class BankingSystem:
+class BankingSystemFrontend:
     """
     Main class for the banking system front-end.
     Coordinates user login, menu display, transaction handling, and session termination.
@@ -190,5 +190,5 @@ if __name__ == "__main__":
     # Temporary file for transaction records
     transactions_file = "outputs/bank_account_transactions.txt"
 
-    app = BankingSystem(accounts_file, transactions_file)
+    app = BankingSystemFrontend(accounts_file, transactions_file)
     app.run()

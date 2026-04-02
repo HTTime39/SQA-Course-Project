@@ -169,7 +169,7 @@ class TransactionFormatter:
         amount_field = self.format_amount(amount)
 
         if miscellaneous_data == "":
-            miscellaneous_field = "  "
+            miscellaneous_field = "00"
         else:
             miscellaneous_field = self.format_miscellaneous_data(miscellaneous_data)
 
