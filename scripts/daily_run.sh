@@ -3,10 +3,10 @@
 # Daily integration script for the Banking System.
 #
 # This script:
-# 1. Runs the frontend once for each seassion input file for a given day.
+# 1. Runs the frontend once for each session input file for a given day.
 # 2. Writes a separate 'bank account transaction' file for each session.
-# 3. Concatenates the session 'bank account transaction' files into a 
-#    single 'merged bank account transactions' file.
+# 3. Concatenates the session's 'bank account transaction' files into a 
+#    single 'merged bank account transactions' file.
 # 4. Runs the backend using the 'merged bank account transactions' file.
 
 set -e
@@ -16,24 +16,23 @@ shopt -s nullglob
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Root folders
+# Source and output folders
 FRONTEND_SRC="$REPO_ROOT/frontend/src"
-FRONTEND_INPUTS="$REPO_ROOT/frontend/inputs"
 FRONTEND_OUTPUTS="$REPO_ROOT/frontend/outputs"
-
 BACKEND_SRC="$REPO_ROOT/backend/src"
-BACKEND_INPUTS="$REPO_ROOT/backend/inputs"
-BACKEND_OUTPUTS="$REPO_ROOT/backend/outputs"
 
-DAY_SESSION_INPUTS="$REPO_ROOT/frontend/inputs/daily_session_inputs/day_1_session_inputs"
+# Validate command-line arguments
+if [ "$#" -ne 6 ]; then
+    echo "Usage: bash scripts/daily_run.sh <day_session_inputs> <current_bank_accounts_file> <master_bank_accounts_file> <merged_bank_account_transactions_file> <new_master_bank_accounts_file> <new_current_bank_accounts_file>"
+    exit 1
+fi
 
-# Files used by the script
-CURRENT_BANK_ACCOUNTS_FILE="$FRONTEND_INPUTS/current_bank_accounts.txt"
-MASTER_BANK_ACCOUNTS_FILE="$BACKEND_INPUTS/master_bank_accounts.txt"
-MERGED_BANK_ACCOUNT_TRANSACTIONS_FILE="$BACKEND_INPUTS/merged_bank_account_transactions.txt"
-
-NEW_MASTER_BANK_ACCOUNTS_FILE="$BACKEND_OUTPUTS/new_master_bank_accounts.txt"
-NEW_CURRENT_BANK_ACCOUNTS_FILE="$BACKEND_OUTPUTS/current_bank_accounts.txt"
+DAY_SESSION_INPUTS="$1"
+CURRENT_BANK_ACCOUNTS_FILE="$2"
+MASTER_BANK_ACCOUNTS_FILE="$3"
+MERGED_BANK_ACCOUNT_TRANSACTIONS_FILE="$4"
+NEW_MASTER_BANK_ACCOUNTS_FILE="$5"
+NEW_CURRENT_BANK_ACCOUNTS_FILE="$6"
 
 # Remove old frontend session output files
 rm -f "$FRONTEND_OUTPUTS"/daily_session_outputs/session_*.txt
