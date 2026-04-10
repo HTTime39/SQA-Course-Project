@@ -1,0 +1,6 @@
+12345 John Doe             A 00424.80
+54321 John Doe             A 00125.00
+54322 Jane Doe             A 00100.00
+54323 Jane Smith           A 00249.95
+54324 Bob Jobs             A 00799.95
+54325 Rae Taylor           A 00100.00
